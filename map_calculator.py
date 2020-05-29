@@ -1,6 +1,11 @@
 """
-mAP calculator
+Author: alexxue
+
 """
+__version__ = '0.1'
+__all__ = ['MAPCalculator',
+        ]
+
 import os
 import sys
 import glob
@@ -28,7 +33,7 @@ import matplotlib.pyplot as plt
     bbox: (left-top_x, left-top_y, right-bottom_x, right-bottom_y), the unit is pixel
 
 """
-class MAP_Calculator(object):
+class MAPCalculator(object):
     """
     需要设定目标文件夹的基本路径，其目录如下：
     folder(path_base):
@@ -99,19 +104,19 @@ class MAP_Calculator(object):
         return class_names
 
     def __load_txt(self, file_path):
-        '''
-        使用numpy加载txt，对只有一行的进行处理
-        '''
+        """
+        使用numpy加载txt，并对只有文件只包含一行的进行处理，确保结果是一个二维array
+        """
         datas = np.loadtxt(file_path)
         if len(datas.shape) == 1:
             datas = np.expand_dims(datas, 0)
         return datas
 
     def load_gt_data(self):
-        '''
+        """
         从ground_truth文件夹加载数据，得到：
         self.gt_counter_images_per_class
-        '''
+        """
         #self.files_gt = os.listdir(self.path_gt)
         self.files_gt = glob.glob(self.path_gt + r'\*.txt')
         self.files_gt.sort()
@@ -162,10 +167,10 @@ class MAP_Calculator(object):
         self.n_classes      = len(self.gt_classes_idx)
 
     def load_dr_data(self):
-        '''
+        """
         从detection_results文件夹中加载数据，获取每个类别所有目标的信息(confidence,bbox)，并按照confidence由大到小
         对目标信息进行排序，并将每个类别的目标信息存放到同名的.json文件中。
-        '''
+        """
         self.files_dr = glob.glob(self.path_dr + r"\*.txt")
         self.files_dr.sort()
 
@@ -216,11 +221,11 @@ class MAP_Calculator(object):
                 json.dump(bounding_boxes, f)
 
     def ap_calculate(self):
-        '''
+        """
          Calculate the AP for each class
          1. 图片中的每个gt_bbox只能被匹配一次，也就是说若有多个同类目标的dr_bbox都与一个gt_bbox匹配了，那么只有第一个匹配上的dr_bbox的tp=True，
             所以在调试的时候非常注意，每次本函数运行前都需要重新运行一下load_gt_data()以重新加载self.gt_files_infos变量。
-        '''
+        """
         sum_AP = 0.0
         # open file to store the output
         with open(os.path.join(self.path_output, 'output.txt'), 'w') as output_file:
@@ -451,11 +456,11 @@ class MAP_Calculator(object):
             )
 
     def ap(self, rec, prec):
-        '''
-        #Params
-        rec: recall, list type
-        prec: precision, list type
-        '''
+        """
+        Args:
+        -rec: recall, list type
+        -prec: precision, list type
+        """
         rec.insert(0, 0.0)
         rec.append(1.0)
         mrec = rec[:]
@@ -593,7 +598,7 @@ class MAP_Calculator(object):
 #path_mAP = r"H:\deepLearning\dataset\visdrone\Task 1 - Object Detection in Images\VisDrone2019-DET-val\mAP"
 path_mAP = r"H:\deepLearning\dataset\visdrone_mAP\map_truckerror"
 if __name__ == '__main__':
-    mc = MAP_Calculator(path_mAP)
+    mc = MAPCalculator(path_mAP)
 
     mc.ap_calculate()
     mc.draw_detection_results_info()

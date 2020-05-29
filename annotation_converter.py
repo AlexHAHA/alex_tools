@@ -1,8 +1,11 @@
 """
-Author: alex
-Func:
-    convert annotation between comman defines
+Author: alexxue
+
 """
+__version__ = '0.1'
+__all__ = ['AnnotationConver',
+        ]
+
 import os
 import numpy as np
 import cv2
@@ -21,18 +24,18 @@ unit_n2n   = 3
 
 class AnnotationConver(object):
     """
-    xyxy to xywh
-    xyxy to 
 
-    unit_normlized2pixel
-    unit_pixel2normlized
     """
     def __init__(self, path_source_anno, path_source_img, path_target_anno, 
                  bbox_ct, unit_ct, columns):
-        '''
-        bbox_ct: bbox convert type
-        unit_ct: unit convert type
-        '''
+        """
+        Args:
+        -path_source_anno: path of source annotations
+        -path_source_img: path of source images
+        -path_target_anno: path of target annotations
+        -bbox_ct: bbox convert type, like xyxy_2_xywh etc.
+        -unit_ct: unit convert type, like unit_p2p etc.
+        """
         self.path_source_anno = path_source_anno
         self.path_source_img  = path_source_img
         self.path_target_anno = path_target_anno
@@ -43,6 +46,9 @@ class AnnotationConver(object):
                          self.xyxy_2_ccwh, self.xywh_2_xyxy, self.ccwh_2_xywh]
 
     def convert(self):
+        """
+        annotation convert application
+        """
         anno_files = os.listdir(self.path_source_anno)
         for anno_file in anno_files:
             bbox = np.loadtxt(os.path.join(self.path_source_anno, anno_file))
